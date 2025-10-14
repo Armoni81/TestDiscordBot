@@ -40,3 +40,4 @@ jobs:
           HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY || vars.HIREBASE_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL || vars.DISCORD_WEBHOOK_URL }}
         run: python post_jobs.py
+
