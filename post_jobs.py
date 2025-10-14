@@ -75,7 +75,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     
     try:
         logger.info(f"Fetching jobs from Hirebase API...")
-        response = requests.get(url, headers=headers, params=params, timeout=30)
+        response = requests.post(url, headers=headers, params=params, timeout=30)
         response.raise_for_status()
         
         jobs = response.json()
