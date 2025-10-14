@@ -61,15 +61,15 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     Returns:
         List of job dictionaries
     """
-    url = "https://api.hirebase.io/v1/jobs"
+    url = "https://api.hirebase.org/jobs/search"
     headers = {
-        "Authorization": f"Bearer {api_key}",
+        "X-API-Key": api_key,
         "Content-Type": "application/json"
     }
     
-    # Adjust parameters based on Hirebase API documentation
+    # Search for cybersecurity-related jobs
     params = {
-        "category": "cybersecurity",  # Adjust as needed
+        "query": "cybersecurity security analyst",
         "limit": 10
     }
     
