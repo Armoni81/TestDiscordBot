@@ -19,6 +19,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests
+      - name: Debug env vars
+  run: |
+    echo "HIREBASE_API_KEY is set? ${{ secrets.HIREBASE_API_KEY != '' }}"
+    echo "DISCORD_WEBHOOK_URL is set? ${{ secrets.DISCORD_WEBHOOK_URL != '' }}"
 
       - name: Run post script
         env:
