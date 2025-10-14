@@ -61,57 +61,42 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     Returns:
         List of job dictionaries
     """
-    # Try different potential endpoints
-    endpoints_to_try = [
-        "https://api.hirebase.org/jobs/search",
-        "https://api.hirebase.org/v1/jobs/search",
-        "https://www.hirebase.org/api/jobs/search",
-    ]
-    
-    params = {
-        "query": "cybersecurity",
-        "limit": 10
+    url = "https://api.hirebase.org/v2/jobs/search"
+    headers = {
+        "x-api-key": api_key,
+        "Content-Type": "application/json"
     }
     
-    for url in endpoints_to_try:
-        try:
-            logger.info(f"Trying endpoint: {url}")
-            
-            # Try with X-API-Key header
-            headers = {
-                "X-API-Key": api_key,
-                "Content-Type": "application/json"
-            }
-            
-            response = requests.get(url, headers=headers, params=params, timeout=30)
-            
-            if response.status_code == 200:
-                jobs = response.json()
-                logger.info(f"✅ Successfully fetched {len(jobs)} jobs from {url}")
-                return jobs
-            elif response.status_code == 401:
-                # Try Bearer token instead
-                headers = {
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                }
-                response = requests.get(url, headers=headers, params=params, timeout=30)
-                if response.status_code == 200:
-                    jobs = response.json()
-                    logger.info(f"✅ Successfully fetched {len(jobs)} jobs from {url}")
-                    return jobs
-            
-            logger.warning(f"Endpoint {url} returned status {response.status_code}: {response.text[:200]}")
-            
-        except requests.exceptions.RequestException as e:
-            logger.warning(f"Failed to connect to {url}: {e}")
-            continue
+    # Search payload for cybersecurity jobs
+    payload = {
+        "job_titles": [
+            "Security Engineer",
+            "Security Analyst", 
+            "Cybersecurity Engineer",
+            "Information Security Analyst",
+            "SOC Analyst",
+            "Penetration Tester"
+        ],
+        "keywords": ["cybersecurity", "security"],
+        "location_types": ["Remote", "Hybrid"]
+    }
     
-    logger.error("All API endpoints failed. Please verify:")
-    logger.error("1. Your HIREBASE_API_KEY is valid")
-    logger.error("2. The API key has proper permissions") 
-    logger.error("3. You've requested API access from hirebase.org")
-    return []
+    try:
+        logger.info(f"Fetching jobs from Hirebase API...")
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        response.raise_for_status()
+        
+        jobs = response.json()
+        logger.info(f"✅ Successfully fetched {len(jobs)} jobs")
+        return jobs
+        
+    except requests.exceptions.HTTPError as e:
+        logger.error(f"HTTP error fetching jobs: {e}")
+        logger.error(f"Response: {e.response.text if e.response else 'No response'}")
+        return []
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error fetching jobs: {e}")
+        return []
 
 
 def format_job_embed(job: Dict) -> Dict:
