@@ -2,13 +2,14 @@ name: Post Hirebase Cyber Jobs
 
 on:
   schedule:
-    # run once per day at 12:00 UTC — adjust (and keep <= 10 runs/day)
+    # Run once per day at 12:00 UTC (you can adjust)
     - cron: '0 12 * * *'
   workflow_dispatch: {}  # lets you run manually from GitHub UI
 
 jobs:
   post-jobs:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -19,10 +20,21 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests
+
       - name: Debug env vars
-  run: |
-    echo "HIREBASE_API_KEY is set? ${{ secrets.HIREBASE_API_KEY != '' }}"
-    echo "DISCORD_WEBHOOK_URL is set? ${{ secrets.DISCORD_WEBHOOK_URL != '' }}"
+        run: |
+          echo "Checking secrets..."
+          if [ -n "${{ secrets.HIREBASE_API_KEY }}" ]; then
+            echo "✅ HIREBASE_API_KEY is set"
+          else
+            echo "❌ HIREBASE_API_KEY is MISSING"
+          fi
+
+          if [ -n "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+            echo "✅ DISCORD_WEBHOOK_URL is set"
+          else
+            echo "❌ DISCORD_WEBHOOK_URL is MISSING"
+          fi
 
       - name: Run post script
         env:
