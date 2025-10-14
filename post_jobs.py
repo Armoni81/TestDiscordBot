@@ -86,8 +86,14 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
         response = requests.post(url, headers=headers, json=payload, timeout=30)
         response.raise_for_status()
         
-        jobs = response.json()
-        logger.info(f"✅ Successfully fetched {len(jobs)} jobs")
+        data = response.json()
+        
+        # Extract jobs from the response
+        jobs = data.get('jobs', [])
+        total_count = data.get('total_count', len(jobs))
+        
+        logger.info(f"✅ Successfully fetched {len(jobs)} jobs (total available: {total_count})")
+        
         return jobs
         
     except requests.exceptions.HTTPError as e:
@@ -99,7 +105,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
         return []
 
 
-def format_job_embed(job: Dict) -> Dict:
+def format_job_embed(job: Dict) -> Optional[Dict]:
     """
     Format a job posting as a Discord embed.
     
@@ -107,41 +113,107 @@ def format_job_embed(job: Dict) -> Dict:
         job: Job dictionary from Hirebase API
     
     Returns:
-        Discord embed dictionary
+        Discord embed dictionary or None if job format is invalid
     """
-    # Adjust field names based on actual Hirebase API response
-    title = job.get('title', 'Unknown Position')
-    company = job.get('company', {}).get('name', 'Unknown Company')
-    location = job.get('location', 'Remote')
-    description = job.get('description', '')
-    job_url = job.get('url', '')
+    if not isinstance(job, dict):
+        logger.warning(f"Unexpected job type: {type(job)}")
+        return None
     
-    # Truncate description if too long (Discord limit is 4096 chars)
-    if len(description) > 300:
-        description = description[:300] + "..."
+    # Extract fields from Hirebase API response
+    title = job.get('job_title', 'Unknown Position')
+    company = job.get('company_name', 'Unknown Company')
+    location_type = job.get('location_type', '')
+    job_type = job.get('job_type', '')
+    
+    # Handle locations array
+    locations = job.get('locations', [])
+    if locations and len(locations) > 0:
+        loc = locations[0]
+        city = loc.get('city', '')
+        country = loc.get('country', '')
+        location = f"{city}, {country}" if city and country else (city or country or location_type)
+    else:
+        location = location_type or 'Not specified'
+    
+    # Get description (truncate if too long)
+    description = job.get('requirements_summary', '') or job.get('description', '')
+    if len(description) > 400:
+        description = description[:400] + "..."
+    
+    # Get application link
+    job_url = job.get('application_link', '')
+    
+    # Build fields
+    fields = [
+        {
+            "name": "🏢 Company",
+            "value": company,
+            "inline": True
+        },
+        {
+            "name": "📍 Location",
+            "value": location,
+            "inline": True
+        }
+    ]
+    
+    # Add job type and location type
+    if job_type:
+        fields.append({
+            "name": "💼 Type",
+            "value": f"{job_type}" + (f" • {location_type}" if location_type else ""),
+            "inline": True
+        })
+    
+    # Add salary if available
+    salary_range = job.get('salary_range')
+    if salary_range and isinstance(salary_range, dict):
+        salary_min = salary_range.get('min', 0)
+        salary_max = salary_range.get('max', 0)
+        currency = salary_range.get('currency', 'USD')
+        if salary_min and salary_max:
+            fields.append({
+                "name": "💰 Salary",
+                "value": f"${salary_min:,} - ${salary_max:,} {currency}",
+                "inline": True
+            })
+    
+    # Add experience range if available
+    yoe_range = job.get('yoe_range')
+    if yoe_range and isinstance(yoe_range, dict):
+        yoe_min = yoe_range.get('min', 0)
+        yoe_max = yoe_range.get('max', 0)
+        if yoe_min or yoe_max:
+            fields.append({
+                "name": "📅 Experience",
+                "value": f"{yoe_min}+ years" if yoe_min == yoe_max else f"{yoe_min}-{yoe_max} years",
+                "inline": True
+            })
+    
+    # Add key skills
+    skills = job.get('skills', [])
+    if skills and isinstance(skills, list):
+        top_skills = ', '.join(skills[:5])
+        fields.append({
+            "name": "🔧 Key Skills",
+            "value": top_skills,
+            "inline": False
+        })
     
     embed = {
         "title": title,
-        "description": description,
-        "url": job_url,
-        "color": 3447003,  # Blue color
-        "fields": [
-            {
-                "name": "🏢 Company",
-                "value": company,
-                "inline": True
-            },
-            {
-                "name": "📍 Location",
-                "value": location,
-                "inline": True
-            }
-        ],
+        "description": description or "Click below to view full job details",
+        "color": 5814783,  # Purple-blue color
+        "fields": fields,
         "footer": {
-            "text": "Posted via Hirebase Job Bot"
+            "text": f"Posted {job.get('date_posted', 'recently')} via Hirebase"
         },
         "timestamp": datetime.utcnow().isoformat()
     }
+    
+    # Add URL if available
+    if job_url and job_url.startswith('http'):
+        embed["url"] = job_url
     
     return embed
 
@@ -174,13 +246,18 @@ def post_to_discord(webhook_url: str, jobs: List[Dict]) -> bool:
         # Post individual jobs as embeds
         for idx, job in enumerate(jobs, 1):
             embed = format_job_embed(job)
+            
+            if embed is None:
+                logger.warning(f"Skipping job {idx} - invalid format")
+                continue
+            
             payload = {
                 "embeds": [embed]
             }
             
             response = requests.post(webhook_url, json=payload, timeout=10)
             response.raise_for_status()
-            logger.info(f"✅ Posted job {idx}/{len(jobs)}: {job.get('title', 'Unknown')}")
+            logger.info(f"✅ Posted job {idx}/{len(jobs)}: {embed.get('title', 'Unknown')}")
         
         return True
         
