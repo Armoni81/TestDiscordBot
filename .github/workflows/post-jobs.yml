@@ -1,0 +1,27 @@
+name: Post Hirebase Cyber Jobs
+
+on:
+  schedule:
+    # run once per day at 12:00 UTC — adjust (and keep <= 10 runs/day)
+    - cron: '0 12 * * *'
+  workflow_dispatch: {}  # lets you run manually from GitHub UI
+
+jobs:
+  post-jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run post script
+        env:
+          HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python post_jobs.py
