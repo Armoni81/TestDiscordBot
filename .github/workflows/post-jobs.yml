@@ -1,43 +1,56 @@
-name: Post Hirebase Cyber Jobs
+name: Post Cybersecurity Jobs to Discord
 
 on:
   schedule:
-    # Run once per day at 12:00 UTC (you can adjust)
-    - cron: '0 12 * * *'
-  workflow_dispatch: {}  # lets you run manually from GitHub UI
+    # Runs daily at 9 AM UTC (adjust as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allows manual triggering for testing
 
 jobs:
   post-jobs:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install requests
-
-      - name: Debug env vars
-        run: |
-          echo "Checking secrets..."
-          if [ -n "${{ secrets.HIREBASE_API_KEY }}" ]; then
-            echo "✅ HIREBASE_API_KEY is set"
-          else
-            echo "❌ HIREBASE_API_KEY is MISSING"
-          fi
-
-          if [ -n "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
-            echo "✅ DISCORD_WEBHOOK_URL is set"
-          else
-            echo "❌ DISCORD_WEBHOOK_URL is MISSING"
-          fi
-
-      - name: Run post script
-        env:
-          HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: python post_jobs.py
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Debug - Check secrets availability
+      run: |
+        echo "Checking if secrets are available..."
+        if [ -z "${{ secrets.HIREBASE_API_KEY }}" ]; then
+          echo "❌ HIREBASE_API_KEY secret is not set"
+        else
+          echo "✅ HIREBASE_API_KEY is available"
+        fi
+        
+        if [ -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+          echo "❌ DISCORD_WEBHOOK_URL secret is not set"
+        else
+          echo "✅ DISCORD_WEBHOOK_URL is available"
+        fi
+    
+    - name: Run job posting script
+      env:
+        HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      run: |
+        python post_jobs.py
+    
+    - name: Upload logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: error-logs
+        path: '*.log'
+        retention-days: 7
