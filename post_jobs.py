@@ -61,7 +61,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     Returns:
         List of job dictionaries
     """
-    url = "https://api.hirebase.org/jobs/search"
+    url = "https://api.hirebase.org/v2/jobs/search"
     headers = {
         "X-API-Key": api_key,
         "Content-Type": "application/json"
