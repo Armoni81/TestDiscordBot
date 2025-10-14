@@ -86,8 +86,20 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
         response = requests.post(url, headers=headers, json=payload, timeout=30)
         response.raise_for_status()
         
-        jobs = response.json()
+        data = response.json()
+        
+        # Handle different response structures
+        if isinstance(data, dict):
+            jobs = data.get('jobs', data.get('results', data.get('data', [])))
+        else:
+            jobs = data
+        
         logger.info(f"✅ Successfully fetched {len(jobs)} jobs")
+        
+        # Debug: Log the structure of the first job
+        if jobs and len(jobs) > 0:
+            logger.info(f"Sample job structure: {list(jobs[0].keys())}")
+        
         return jobs
         
     except requests.exceptions.HTTPError as e:
@@ -109,39 +121,53 @@ def format_job_embed(job: Dict) -> Dict:
     Returns:
         Discord embed dictionary
     """
-    # Adjust field names based on actual Hirebase API response
-    title = job.get('title', 'Unknown Position')
-    company = job.get('company', {}).get('name', 'Unknown Company')
-    location = job.get('location', 'Remote')
-    description = job.get('description', '')
-    job_url = job.get('url', '')
+    # Try different possible field names from the API
+    title = job.get('title') or job.get('job_title') or job.get('position') or 'Unknown Position'
+    company = job.get('company_name') or job.get('company', {}).get('name') if isinstance(job.get('company'), dict) else job.get('company') or 'Unknown Company'
+    location = job.get('location') or job.get('city') or job.get('location_type') or 'Not specified'
+    description = job.get('description') or job.get('summary') or ''
+    job_url = job.get('url') or job.get('link') or job.get('job_url') or ''
+    salary = job.get('salary') or job.get('salary_range') or 'Not specified'
     
     # Truncate description if too long (Discord limit is 4096 chars)
     if len(description) > 300:
         description = description[:300] + "..."
     
+    fields = [
+        {
+            "name": "🏢 Company",
+            "value": str(company),
+            "inline": True
+        },
+        {
+            "name": "📍 Location",
+            "value": str(location),
+            "inline": True
+        }
+    ]
+    
+    # Add salary if available
+    if salary and salary != 'Not specified':
+        fields.append({
+            "name": "💰 Salary",
+            "value": str(salary),
+            "inline": True
+        })
+    
     embed = {
         "title": title,
-        "description": description,
-        "url": job_url,
+        "description": description or "No description available",
         "color": 3447003,  # Blue color
-        "fields": [
-            {
-                "name": "🏢 Company",
-                "value": company,
-                "inline": True
-            },
-            {
-                "name": "📍 Location",
-                "value": location,
-                "inline": True
-            }
-        ],
+        "fields": fields,
         "footer": {
             "text": "Posted via Hirebase Job Bot"
         },
         "timestamp": datetime.utcnow().isoformat()
     }
+    
+    # Only add URL if it exists and is valid
+    if job_url and job_url.startswith('http'):
+        embed["url"] = job_url
     
     return embed
 
