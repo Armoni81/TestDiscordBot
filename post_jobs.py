@@ -102,7 +102,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
   "etl",
   "data architecture"],
         "location_types": ["Remote", "Hybrid"],
-        "location_group": "Atlanta"
+         "geo_locations": [{"city": "Atlanta", "region": "Georgia", "country": "United States"}]
     }
     
     try:
