@@ -31,7 +31,7 @@ jobs:
           DISCORD_MANAGEMENT_HOOK: ${{ secrets.DISCORD_MANAGEMENT_HOOK }}
           DISCORD_NETWORK_HOOK: ${{ secrets.DISCORD_NETWORK_HOOK }}
           DISCORD_SUPPORTHELP_HOOK: ${{ secrets.DISCORD_SUPPORTHELP_HOOK }}
-        run: python post-jobs.py
+        run: python post_jobs.py
       
       - name: Upload logs (if any)
         if: always()
