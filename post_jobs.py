@@ -138,35 +138,60 @@ def fetch_jobs(api_key: str) -> Dict:
     if not api_key:
         raise Exception('HIREBASE_API_KEY not configured')
     
-    # Debug API key format (without revealing the actual key)
     print('API Key configured: Yes')
-    print(f'API Key length: {len(api_key)}')
-    print(f'API Key starts with: {api_key[:4]}')
-    print(f'API Key ends with: {api_key[-4:]}')
-    print(f'Has spaces: {" " in api_key}')
-    has_newlines = '\n' in api_key or '\r' in api_key
-    print(f'Has newlines: {has_newlines}')
     
     url = 'https://api.hirebase.org/v2/jobs/search'
     headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'User-Agent': 'Discord-Job-Poster/1.0',
-        'x-api-key': api_key
+        'x-api-key': api_key,
+        'Content-Type': 'application/json'
     }
     
-    payload = {'limit': 50}
+    # Search payload - using broader search like the working code
+    payload = {
+        'job_titles': [
+            'Security Engineer',
+            'Security Analyst',
+            'Cybersecurity Engineer',
+            'Information Security Analyst',
+            'SOC Analyst',
+            'Penetration Tester',
+            'Data Engineer',
+            'Data Analyst',
+            'Data Scientist',
+            'Business Intelligence Analyst',
+            'DevOps Engineer',
+            'Site Reliability Engineer',
+            'Software Engineer',
+            'Software Developer',
+            'Full Stack Developer',
+            'Frontend Developer',
+            'Backend Developer',
+            'Engineering Manager',
+            'Technical Lead',
+            'Network Engineer',
+            'Systems Administrator',
+            'IT Support Specialist',
+            'Help Desk Technician'
+        ],
+        'keywords': ['cybersecurity', 'security', 'data', 'software', 'developer', 'engineer'],
+        'location_types': ['Remote', 'Hybrid'],
+        'limit': 50
+    }
     
-    print(f'\nRequest headers: {json.dumps({**headers, "x-api-key": api_key[:4] + "..." + api_key[-4:]}, indent=2)}')
-    
-    response = requests.post(url, json=payload, headers=headers)
-    
-    print(f'Response status: {response.status_code}')
-    
-    if response.status_code != 200:
-        raise Exception(f'API returned {response.status_code}: {response.text}')
-    
-    return response.json()
+    try:
+        response = requests.post(url, json=payload, headers=headers, timeout=30)
+        response.raise_for_status()
+        
+        print(f'Response status: {response.status_code}')
+        return response.json()
+        
+    except requests.exceptions.HTTPError as e:
+        print(f'HTTP error: {e}')
+        print(f'Response: {e.response.text if e.response else "No response"}')
+        raise Exception(f'API returned {e.response.status_code}: {e.response.text}')
+    except requests.exceptions.RequestException as e:
+        print(f'Request error: {e}')
+        raise
 
 
 def main():
