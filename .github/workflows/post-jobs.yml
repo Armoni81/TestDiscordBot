@@ -1,59 +1,42 @@
-name: Post Cybersecurity Jobs to Discord
+name: Post Daily Jobs to Discord
 
 on:
   schedule:
-    # Runs daily at 9 AM UTC (adjust as needed)
     - cron: '0 9 * * *'
-  workflow_dispatch:  # Allows manual triggering for testing
+  workflow_dispatch:
 
 jobs:
   post-jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        else
-          pip install requests
-        fi
-    
-    - name: Debug - Check secrets availability
-      run: |
-        echo "Checking if secrets are available..."
-        if [ -z "${{ secrets.HIREBASE_API_KEY }}" ]; then
-          echo "❌ HIREBASE_API_KEY secret is not set"
-        else
-          echo "✅ HIREBASE_API_KEY is available"
-        fi
-        
-        if [ -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
-          echo "❌ DISCORD_WEBHOOK_URL secret is not set"
-        else
-          echo "✅ DISCORD_WEBHOOK_URL is available"
-        fi
-    
-    - name: Run job posting script
-      env:
-        HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-      run: |
-        python post_jobs.py
-    
-    - name: Upload logs on failure
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: error-logs
-        path: '*.log'
-        retention-days: 7
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Run job poster script
+        env:
+          HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
+          DISCORD_DATA_HOOK: ${{ secrets.DISCORD_DATA_HOOK }}
+          DISCORD_OPS_HOOK: ${{ secrets.DISCORD_OPS_HOOK }}
+          DISCORD_SECURITY_HOOK: ${{ secrets.DISCORD_SECURITY_HOOK }}
+          DISCORD_DEV_HOOK: ${{ secrets.DISCORD_DEV_HOOK }}
+          DISCORD_MANAGEMENT_HOOK: ${{ secrets.DISCORD_MANAGEMENT_HOOK }}
+          DISCORD_NETWORK_HOOK: ${{ secrets.DISCORD_NETWORK_HOOK }}
+          DISCORD_SUPPORTHELP_HOOK: ${{ secrets.DISCORD_SUPPORTHELP_HOOK }}
+        run: python post-jobs.py
+      
+      - name: Upload logs (if any)
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: job-poster-logs
+          path: job_poster.log
+          if-no-files-found: ignore
