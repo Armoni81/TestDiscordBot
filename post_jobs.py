@@ -146,7 +146,7 @@ def fetch_jobs(api_key: str) -> Dict:
         'Content-Type': 'application/json'
     }
     
-    # Search payload - using broader search like the working code
+    # Search payload matching working format
     payload = {
         'job_titles': [
             'Security Engineer',
@@ -174,24 +174,14 @@ def fetch_jobs(api_key: str) -> Dict:
             'Help Desk Technician'
         ],
         'keywords': ['cybersecurity', 'security', 'data', 'software', 'developer', 'engineer'],
-        'location_types': ['Remote', 'Hybrid'],
-        'limit': 50
+        'location_types': ['Remote', 'Hybrid']
     }
     
-    try:
-        response = requests.post(url, json=payload, headers=headers, timeout=30)
-        response.raise_for_status()
-        
-        print(f'Response status: {response.status_code}')
-        return response.json()
-        
-    except requests.exceptions.HTTPError as e:
-        print(f'HTTP error: {e}')
-        print(f'Response: {e.response.text if e.response else "No response"}')
-        raise Exception(f'API returned {e.response.status_code}: {e.response.text}')
-    except requests.exceptions.RequestException as e:
-        print(f'Request error: {e}')
-        raise
+    response = requests.post(url, headers=headers, json=payload, timeout=30)
+    print(f'Response status: {response.status_code}')
+    
+    response.raise_for_status()
+    return response.json()
 
 
 def main():
