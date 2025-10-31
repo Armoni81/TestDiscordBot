@@ -1,4 +1,4 @@
-name: Post Cybersecurity Jobs to Discord
+name: Post Data Jobs to Discord
 
 on:
   schedule:
@@ -48,7 +48,7 @@ jobs:
         HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
       run: |
-        python post_jobs.py
+        python post_ops_jobs.py
     
     - name: Upload logs on failure
       if: failure()
