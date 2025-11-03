@@ -148,7 +148,7 @@ def format_job_embed(job: Dict) -> Optional[Dict]:
     # Extract fields from Hirebase API response
     title = job.get('job_title', 'Unknown Position')
     company = job.get('company_name', 'Unknown Company')
-    location_type = job.get('location_type', '')
+    location_type = "Atlanta, GA 🍑"
     job_type = job.get('job_type', '')
     
     # Handle locations array
