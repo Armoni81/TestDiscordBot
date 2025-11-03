@@ -3,7 +3,7 @@ name: Post Ops Jobs to Discord
 on:
   schedule:
     # Runs daily at 9 AM UTC (adjust as needed)
-    - cron: - cron: '2 11 * * *'
+    - cron: '2 11 * * *'
   workflow_dispatch:  # Allows manual triggering for testing
 
 jobs:
