@@ -20,19 +20,29 @@ def fetch_security_jobs(api_key: str) -> List[Dict]:
     
     # Working payload format
     payload = {
-        'job_titles': [
-            'Security Engineer',
-            'Security Analyst',
-            'Cybersecurity Engineer',
-            'Information Security Analyst',
-            'SOC Analyst',
-            'Penetration Tester',
-            'Security Architect',
-            'Application Security Engineer',
-            'Cloud Security Engineer'
-        ],
-        'keywords': ['cybersecurity', 'security', 'infosec', 'Atlanta'],
-        'location_types': ['Remote', 'Hybrid']
+        {
+  "job_titles": [
+    "Security Engineer",
+    "Security Analyst",
+    "Cybersecurity Engineer",
+    "Information Security Analyst",
+    "SOC Analyst",
+    "Penetration Tester",
+    "Security Architect",
+    "Application Security Engineer",
+    "Cloud Security Engineer"
+  ],
+  "keywords": ["cybersecurity", "security", "infosec", "Atlanta"],
+  "location_types": ["Remote", "Hybrid"],
+  "geo_locations": [
+    {
+      "city": "Atlanta",
+      "region": "Georgia",
+      "country": "United States"
+    }
+  ]
+}
+
     }
     
     try:
