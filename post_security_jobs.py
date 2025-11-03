@@ -33,13 +33,13 @@ def validate_environment() -> tuple[str, str]:
         ConfigError: If required environment variables are missing
     """
     api_key = os.getenv('HIREBASE_API_KEY')
-    webhook_url = os.getenv('DISCORD_WEBHOOK_URL')
+    webhook_url = os.getenv('DISCORD_SECURITY_HOOK')
     
     missing = []
     if not api_key:
         missing.append('HIREBASE_API_KEY')
     if not webhook_url:
-        missing.append('DISCORD_WEBHOOK_URL')
+        missing.append('DISCORD_SECURITY_HOOK')
     
     if missing:
         error_msg = f"Missing required environment variables: {', '.join(missing)}"
