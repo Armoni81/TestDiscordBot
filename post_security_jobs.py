@@ -19,8 +19,7 @@ def fetch_security_jobs(api_key: str) -> List[Dict]:
     }
     
     # Working payload format
-    payload = {
-        {
+    {
   "job_titles": [
     "Security Engineer",
     "Security Analyst",
@@ -43,7 +42,6 @@ def fetch_security_jobs(api_key: str) -> List[Dict]:
   ]
 }
 
-    }
     
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=30)
