@@ -1,4 +1,4 @@
-name: Post Cybersecurity Jobs to Discord
+name: Post Ops Jobs to Discord
 
 on:
   schedule:
