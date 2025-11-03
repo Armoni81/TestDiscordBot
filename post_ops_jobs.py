@@ -89,8 +89,8 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
   "Docker",
   "Terraform",
   "Ansible"],
-        "location_types": ["Remote", "Hybrid"],
-         "geo_locations": [{"city": "Atlanta", "region": "Georgia", "country": "United States"}]
+        "location_types": ["Remote", "Hybrid", "On-site", "In-Person"],
+         "geo_locations": [{"city": "Atlanta", "region": "Georgia"}]
     }
     
     try:
