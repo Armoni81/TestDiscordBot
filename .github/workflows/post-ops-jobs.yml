@@ -37,18 +37,18 @@ jobs:
           echo "✅ HIREBASE_API_KEY is available"
         fi
         
-        if [ -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
-          echo "❌ DISCORD_WEBHOOK_URL secret is not set"
+        if [ -z "${{ secrets.DISCORD_OPS_HOOK }}" ]; then
+          echo "❌ DISCORD_OPS_HOOK secret is not set"
         else
-          echo "✅ DISCORD_WEBHOOK_URL is available"
+          echo "✅ DISCORD_OPS_HOOK is available"
         fi
     
     - name: Run job posting script
       env:
         HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_OPS_HOOK }}
       run: |
-        python post_jobs.py
+        python post_ops_jobs.py
     
     - name: Upload logs on failure
       if: failure()
