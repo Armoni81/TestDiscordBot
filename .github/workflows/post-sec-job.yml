@@ -48,7 +48,7 @@ jobs:
         HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_SECURITY_HOOK }}
       run: |
-        python post_sec_jobs.py
+        python post_security_jobs.py
     
     - name: Upload logs on failure
       if: failure()
