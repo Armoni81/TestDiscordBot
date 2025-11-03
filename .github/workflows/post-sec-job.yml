@@ -46,7 +46,7 @@ jobs:
     - name: Run job posting script
       env:
         HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_SECURITY_HOOK }}
+        DISCORD_SECURITY_URL: ${{ secrets.DISCORD_SECURITY_HOOK }}
       run: |
         python post_security_jobs.py
     
