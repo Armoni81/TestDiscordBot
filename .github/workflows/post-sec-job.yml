@@ -1,0 +1,59 @@
+name: Post Security Jobs to Discord
+
+on:
+  schedule:
+    # Runs daily at 9 AM UTC (adjust as needed)
+    - cron: - cron: '4 11 * * *'
+  workflow_dispatch:  # Allows manual triggering for testing
+
+jobs:
+  post-jobs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        else
+          pip install requests
+        fi
+    
+    - name: Debug - Check secrets availability
+      run: |
+        echo "Checking if secrets are available..."
+        if [ -z "${{ secrets.HIREBASE_API_KEY }}" ]; then
+          echo "❌ HIREBASE_API_KEY secret is not set"
+        else
+          echo "✅ HIREBASE_API_KEY is available"
+        fi
+        
+        if [ -z "${{ secrets.DISCORD_SECURITY_HOOK }}" ]; then
+          echo "❌ DISCORD_SECURITY_HOOK secret is not set"
+        else
+          echo "✅ DISCORD_SECURITY_HOOK is available"
+        fi
+    
+    - name: Run job posting script
+      env:
+        HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_SECURITY_HOOK }}
+      run: |
+        python post_sec_jobs.py
+    
+    - name: Upload logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: error-logs
+        path: '*.log'
+        retention-days: 7
