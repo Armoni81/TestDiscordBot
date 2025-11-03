@@ -104,7 +104,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
         # Extract jobs from the response
         jobs = data.get('jobs', [])
 		# HERE Get a random length of job so the same jobs wont be posted  🚨🚨
-		logger.info(jobs, 'here')
+		# logger.info(jobs, 'here')
         total_count = data.get('total_count', len(jobs))
         
         logger.info(f"✅ Successfully fetched {len(jobs)} jobs (total available: {total_count})")
