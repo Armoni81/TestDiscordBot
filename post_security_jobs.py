@@ -19,7 +19,7 @@ def fetch_security_jobs(api_key: str) -> List[Dict]:
     }
     
     # Working payload format
-const payload = {
+    payload = {
   "job_titles": [
     "Security Engineer",
     "Security Analyst",
