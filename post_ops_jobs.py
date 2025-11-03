@@ -70,27 +70,28 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     payload = {
         "job_titles": [
             "DevOps",
-  "Site Reliability Engineer",
-  "Cloud Operations",
-  "Infrastructure Engineer",
-  "Platform Engineer",
-  "Systems Administrator",
-  "Network Operations",
-  "IT Operations",
-  "Release Engineer",
-  "Automation Engineer",
-  "Monitoring",
-  "Deployment",
-  "CI/CD",
-  "AWS",
-  "Azure",
-  "GCP",
-  "Kubernetes",
-  "Docker",
-  "Terraform",
-  "Ansible"],
-        "location_types": ["Remote", "Hybrid", "On-site", "In-Person"],
-         "geo_locations": [{"city": "Atlanta", "region": "Georgia"}]
+  			"Site Reliability Engineer",
+  			"Cloud Operations",
+  			"Infrastructure Engineer",
+  			"Platform Engineer",
+  			"Systems Administrator",
+  			"Network Operations",
+  			"IT Operations",
+  			"Release Engineer",
+  			"Automation Engineer",
+  			"Monitoring",
+  			"Deployment",
+  			"CI/CD",
+  			"AWS",
+  			"Azure",
+  			"GCP",
+  			"Kubernetes",
+  			"Docker",
+  			"Terraform",
+  			"Ansible"],
+        	"location_types": ["Remote", "Hybrid", "On-site", "In-Person"],
+         	"locations": [{"city": "Atlanta", "region": "Georgia"}],
+
     }
     
     try:
@@ -102,6 +103,8 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
         
         # Extract jobs from the response
         jobs = data.get('jobs', [])
+		# HERE Get a random length of job so the same jobs wont be posted  🚨🚨
+		logger.info(jobs, 'here')
         total_count = data.get('total_count', len(jobs))
         
         logger.info(f"✅ Successfully fetched {len(jobs)} jobs (total available: {total_count})")
