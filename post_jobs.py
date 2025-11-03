@@ -70,15 +70,39 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     # Search payload for cybersecurity jobs
     payload = {
         "job_titles": [
-            "Security Engineer",
-            "Security Analyst", 
-            "Cybersecurity Engineer",
-            "Information Security Analyst",
-            "SOC Analyst",
-            "Penetration Tester"
+             "Data Analyst",
+  "Data Engineer",
+  "Data Scientist",
+  "Machine Learning Engineer",
+  "AI Research Scientist",
+  "Business Intelligence Analyst",
+  "Database Administrator",
+  "Data Architect",
+  "Data Visualization Engineer",
+  "Quantitative Analyst",
+  "ETL Developer",
+  "Big Data Engineer",
+  "Data Governance Specialist",
+  "Data Quality Analyst",
+  "Cloud Data Engineer",
+  "Data Operations Engineer",
+  "Marketing Data Analyst",
+  "Financial Data Analyst",
+  "Product Data Analyst",
+  "Geospatial Data Scientist"
         ],
-        "keywords": ["cybersecurity", "security"],
-        "location_types": ["Remote", "Hybrid"]
+        "keywords": [ "data analyst",
+  "data engineer",
+  "data scientist",
+  "machine learning",
+  "business intelligence",
+  "big data",
+  "sql",
+  "data visualization",
+  "etl",
+  "data architecture"],
+        "location_types": ["Remote", "Hybrid"],
+         "geo_locations": [{"city": "Atlanta", "region": "Georgia", "country": "United States"}]
     }
     
     try:
