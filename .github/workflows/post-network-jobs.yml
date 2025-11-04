@@ -1,9 +1,9 @@
-name: Post Security Jobs to Discord
+name: Post Network Jobs to Discord
 
 on:
   schedule:
     # Runs daily at 9 AM UTC (adjust as needed)
-    - cron: '6 11 * * *'
+    - cron: '8 11 * * *'
   workflow_dispatch:  # Allows manual triggering for testing
 
 jobs:
@@ -37,18 +37,18 @@ jobs:
           echo "✅ HIREBASE_API_KEY is available"
         fi
         
-        if [ -z "${{ secrets.DISCORD_SECURITY_HOOK }}" ]; then
-          echo "❌ DISCORD_SECURITY_HOOK secret is not set"
+        if [ -z "${{ secrets.DISCORD_NETWORK_URL }}" ]; then
+          echo "❌ DISCORD_WEBHOOK_URL secret is not set"
         else
-          echo "✅ DISCORD_SECURITY_HOOK is available"
+          echo "✅ DISCORD_NETWORK_URL is available"
         fi
     
     - name: Run job posting script
       env:
         HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
-        DISCORD_SECURITY_HOOK: ${{ secrets.DISCORD_SECURITY_HOOK }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_NETWORK_URL }}
       run: |
-        python post_security_jobs.py
+        python post_network_jobs.py
     
     - name: Upload logs on failure
       if: failure()
