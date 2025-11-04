@@ -68,7 +68,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     }
     
     # Search payload for cybersecurity jobs
-    {
+   payload = {
   "job_titles": [
     "Software Engineer",
     "Full Stack Engineer",
