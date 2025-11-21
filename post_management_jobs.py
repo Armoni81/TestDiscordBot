@@ -87,24 +87,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
             "IT Team Lead"
         ],
         "keywords": [
-            "network engineer",
-            "network administrator",
-            "systems engineer",
-            "network infrastructure",
-            "LAN",
-            "WAN",
-            "VPN",
-            "firewall",
-            "Cisco",
-            "Juniper",
-            "routing",
-            "switching",
-            "TCP/IP",
-            "network security",
-            "wireless",
-            "VoIP",
-            "infrastructure",
-            "IT support",
+            "manager",
             "Atlanta"
         ],
         "location_types": ["Remote", "Hybrid"],
@@ -243,6 +226,9 @@ def post_to_discord(webhook_url: str, jobs: List[Dict]) -> bool:
         response = requests.post(webhook_url, json=summary_payload, timeout=10)
         response.raise_for_status()
         logger.info("✅ Posted summary message")
+        
+        # Add delay after summary message
+        time.sleep(2)
 
         for idx, job in enumerate(jobs, 1):
             embed = format_job_embed(job)
@@ -255,6 +241,10 @@ def post_to_discord(webhook_url: str, jobs: List[Dict]) -> bool:
             response = requests.post(webhook_url, json=payload, timeout=10)
             response.raise_for_status()
             logger.info(f"✅ Posted job {idx}/{len(jobs)}: {embed.get('title', 'Unknown')}")
+            
+            # Add delay between posts to avoid rate limiting
+            if idx < len(jobs):
+                time.sleep(2)
 
         return True
 
