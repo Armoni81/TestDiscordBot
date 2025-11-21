@@ -31,7 +31,6 @@ def fetch_security_jobs(api_key: str) -> List[Dict]:
             "Systems Support Engineer",
             "Network Support Technician",
             "NOC Technician",
-            "SOC Analyst (Tier 1)",
             "IT Support Engineer",
             "Cloud Support Associate",
             "Technical Support Specialist",
