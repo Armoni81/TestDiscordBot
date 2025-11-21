@@ -17,36 +17,37 @@ def fetch_security_jobs(api_key: str) -> List[Dict]:
         'x-api-key': api_key,
         'Content-Type': 'application/json'
     }
-    
-payload = {
-  "job_titles": [
-    "IT Support Specialist",
-    "Technical Support Engineer",
-    "Help Desk Technician",
-    "Service Desk Analyst",
-    "Application Support Engineer",
-    "Desktop Support Technician",
-    "IT Operations Support",
-    "Systems Support Engineer",
-    "Network Support Technician",
-    "NOC Technician",
-    "SOC Analyst (Tier 1)",
-    "IT Support Engineer",
-    "Cloud Support Associate",
-    "Technical Support Specialist",
-    "Production Support Engineer"
-  ],
-  "keywords": ["cybersecurity", "security", "infosec", "Atlanta"],
-  "location_types": ["Remote", "Hybrid"],
-  "geo_locations": [
-    {
-      "city": "Atlanta",
-      "region": "Georgia",
-      "country": "United States"
+
+    # FIXED: Proper indentation
+    payload = {
+        "job_titles": [
+            "IT Support Specialist",
+            "Technical Support Engineer",
+            "Help Desk Technician",
+            "Service Desk Analyst",
+            "Application Support Engineer",
+            "Desktop Support Technician",
+            "IT Operations Support",
+            "Systems Support Engineer",
+            "Network Support Technician",
+            "NOC Technician",
+            "SOC Analyst (Tier 1)",
+            "IT Support Engineer",
+            "Cloud Support Associate",
+            "Technical Support Specialist",
+            "Production Support Engineer"
+        ],
+        "keywords": ["cybersecurity", "security", "infosec", "Atlanta"],
+        "location_types": ["Remote", "Hybrid"],
+        "geo_locations": [
+            {
+                "city": "Atlanta",
+                "region": "Georgia",
+                "country": "United States"
+            }
+        ]
     }
-  ]
-}
- 
+
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=30)
         print(f'Response status: {response.status_code}')
@@ -66,7 +67,6 @@ payload = {
     except requests.exceptions.RequestException as e:
         print(f'Error fetching jobs: {e}')
         return []
-
 
 def strip_html(text: str) -> str:
     """Strip HTML tags from text"""
