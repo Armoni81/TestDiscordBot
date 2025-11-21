@@ -67,55 +67,54 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
         "Content-Type": "application/json"
     }
 
-  payload = {
-    "job_titles": [
-        "Network Engineer",
-        "Network Administrator",
-        "Network Operations Engineer",
-        "Network Technician",
-        "Systems Engineer",
-        "Infrastructure Engineer",
-        "IT Support Engineer",
-        "Network Security Engineer",
-        "Wireless Network Engineer",
-        "LAN/WAN Engineer",
-        "Network Analyst",
-        "Network Architect",
-        "Telecommunications Engineer",
-        "IT Systems Administrator",
-        "VoIP Engineer"
-    ],
-    "keywords": [
-        "network engineer",
-        "network administrator",
-        "systems engineer",
-        "network infrastructure",
-        "LAN",
-        "WAN",
-        "VPN",
-        "firewall",
-        "Cisco",
-        "Juniper",
-        "routing",
-        "switching",
-        "TCP/IP",
-        "network security",
-        "wireless",
-        "VoIP",
-        "infrastructure",
-        "IT support",
-        "Atlanta"
-    ],
-    "location_types": ["Remote", "Hybrid"],
-    "geo_locations": [
-        { 
-            "city": "Atlanta",
-            "region": "Georgia",
-            "country": "United States"
-        }
-    ]
-}
-
+    payload = {
+        "job_titles": [
+            "Network Engineer",
+            "Network Administrator",
+            "Network Operations Engineer",
+            "Network Technician",
+            "Systems Engineer",
+            "Infrastructure Engineer",
+            "IT Support Engineer",
+            "Network Security Engineer",
+            "Wireless Network Engineer",
+            "LAN/WAN Engineer",
+            "Network Analyst",
+            "Network Architect",
+            "Telecommunications Engineer",
+            "IT Systems Administrator",
+            "VoIP Engineer"
+        ],
+        "keywords": [
+            "network engineer",
+            "network administrator",
+            "systems engineer",
+            "network infrastructure",
+            "LAN",
+            "WAN",
+            "VPN",
+            "firewall",
+            "Cisco",
+            "Juniper",
+            "routing",
+            "switching",
+            "TCP/IP",
+            "network security",
+            "wireless",
+            "VoIP",
+            "infrastructure",
+            "IT support",
+            "Atlanta"
+        ],
+        "location_types": ["Remote", "Hybrid"],
+        "geo_locations": [
+            { 
+                "city": "Atlanta",
+                "region": "Georgia",
+                "country": "United States"
+            }
+        ]
+    }
 
     try:
         logger.info("Fetching jobs from Hirebase API...")
