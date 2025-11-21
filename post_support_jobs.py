@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import time
 from datetime import datetime
 from typing import List, Dict, Optional
 import re
@@ -196,6 +197,8 @@ def post_to_discord(webhook_url: str, jobs: List[Dict]) -> bool:
         response.raise_for_status()
         print('✅ Posted summary message')
         
+        time.sleep(2)
+        
         # Post individual jobs as embeds (limit to 10 to avoid spam)
         for idx, job in enumerate(jobs[:10], 1):
             embed = format_job_embed(job)
@@ -211,6 +214,9 @@ def post_to_discord(webhook_url: str, jobs: List[Dict]) -> bool:
             response = requests.post(webhook_url, json=payload, timeout=10)
             response.raise_for_status()
             print(f"✅ Posted job {idx}/{min(len(jobs), 10)}: {embed.get('title', 'Unknown')}")
+            
+            if idx < min(len(jobs), 10):
+                time.sleep(2)
         
         return True
         
