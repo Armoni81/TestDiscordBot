@@ -108,7 +108,7 @@ def fetch_cybersecurity_jobs(api_key: str) -> List[Dict]:
     ],
     "location_types": ["Remote", "Hybrid"],
     "geo_locations": [
-        {
+        { 
             "city": "Atlanta",
             "region": "Georgia",
             "country": "United States"
