@@ -37,16 +37,16 @@ jobs:
           echo "✅ HIREBASE_API_KEY is available"
         fi
         
-        if [ -z "${{ secrets.DISCORD_NETWORK_URL }}" ]; then
+        if [ -z "${{ secrets.DISCORD_NETWORK_HOOK }}" ]; then
           echo "❌ DISCORD_WEBHOOK_URL secret is not set"
         else
-          echo "✅ DISCORD_NETWORK_URL is available"
+          echo "✅ DISCORD_NETWORK_HOOK is available"
         fi
     
     - name: Run job posting script
       env:
         HIREBASE_API_KEY: ${{ secrets.HIREBASE_API_KEY }}
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_NETWORK_URL }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_NETWORK_HOOK }}
       run: |
         python post_network_jobs.py
     
